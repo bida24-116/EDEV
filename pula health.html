@@ -107,7 +107,7 @@
 </div>
 
 <div class="container">
-    <h2>Submit Your Symptoms</h2>
+    <h2>Submit Your Symptoms (English or Setswana)</h2>
 
     <textarea id="symptoms" rows="5" placeholder="Describe your symptoms..."></textarea>
     <button onclick="giveRecommendation()">Get Recommendation</button>
@@ -116,6 +116,10 @@
 </div>
 
 <script>
+
+    // ===============================
+    // QUEUE BOOKING FUNCTION
+    // ===============================
     function submitBooking() {
         const name = document.getElementById('name').value;
         const omang = document.getElementById('omang').value;
@@ -136,5 +140,51 @@
             </p>`;
     }
 
+
+
+    // ===============================
+    // MULTILINGUAL SYMPTOM CHECKER
+    // ===============================
     function giveRecommendation() {
         const symptoms = document.getElementById("symptoms").value.toLowerCase();
+        const box = document.getElementById("recommendationBox");
+
+        if (!symptoms) {
+            alert("Please enter your symptoms / Tsweetswee tsenya matshwao a bolwetse.");
+            return;
+        }
+
+        let advice = "Please visit a hospital for a full check-up. / Tsweetswee etela sepatela gore o tlholelwe sentle.";
+
+        // FEVER (English + Setswana)
+        if (symptoms.includes("fever") || symptoms.includes("hot") || symptoms.includes("mogote")) {
+            advice = "O ka tswa o na le mogote. Nwa metsi a mantsi mme o ikhutse. Etela sepatela fa mogote o sa feke.";
+        }
+
+        // COUGH + SORE THROAT
+        if (symptoms.includes("cough") || symptoms.includes("sore throat") || 
+            symptoms.includes("kgwa") || symptoms.includes("bolwetse jwa phatlho")) {
+            advice = "Matshwao ano a ka nna a lefu la phatlho. Apara maseke mme o ikhutse. Etela sepatela fa go gola.";
+        }
+
+        // CHEST PAIN
+        if (symptoms.includes("chest pain") || symptoms.includes(" botlhoko mo sefubeng")) {
+            advice = "Botlhoko mo sefubeng bo ka nna kotsi. Tsweetswee etela sepatela ka bonako.";
+        }
+
+        // HEADACHE
+        if (symptoms.includes("headache") || symptoms.includes(" botlhoko jwa tlhogo")) {
+            advice = "Botlhoko jwa tlhogo bo ka tsalwa ke go se nwe metsi, kgatelelo kgotsa bolwetse. Ikhutse mme o nwe metsi a le mantsi.";
+        }
+
+        // DISPLAY RESULT
+        box.style.display = "block";
+        box.innerHTML = `<strong>Recommendation:</strong><br>${advice}`;
+    }
+
+</script>
+
+</body>
+</html>
+
+
