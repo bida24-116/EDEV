@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botswana Hospital Queue Booking</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #2a5c82;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        h2 {
+            color: #2a5c82;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #aaa;
+        }
+
+        button {
+            background: #2a5c82;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background: #1f4561;
+        }
+
+        #recommendationBox {
+            background: #e8f4ff;
+            padding: 15px;
+            border-left: 5px solid #2a5c82;
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Botswana Public Hospital Queue Booking</h1>
+    <p>Book your queue, submit your symptoms, and get basic health recommendations.</p>
+</header>
+
+<div class="container">
+    <h2>Queue Booking Form</h2>
+
+    <form id="bookingForm">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name" required>
+
+        <label>National ID (Omang)</label>
+        <input type="text" id="omang" placeholder="Enter your Omang" required>
+
+        <label>Select Hospital</label>
+        <select id="hospital" required>
+            <option value="">-- choose hospital --</option>
+            <option>Princess Marina Hospital</option>
+            <option>Nyangabgwe Referral Hospital</option>
+            <option>Molepolole DHMT</option>
+            <option>Mochudi Hospital</option>
+            <option>Ghanzi Primary Hospital</option>
+        </select>
+
+        <label>Reason for Visit</label>
+        <input type="text" id="reason" placeholder="E.g. check-up, pain, fever" required>
+
+        <button type="button" onclick="submitBooking()">Book Queue</button>
+    </form>
+
+    <div id="bookingMessage"></div>
+</div>
+
+<div class="container">
+    <h2>Submit Your Symptoms</h2>
+
+    <textarea id="symptoms" rows="5" placeholder="Describe your symptoms..."></textarea>
+    <button onclick="giveRecommendation()">Get Recommendation</button>
+
+    <div id="recommendationBox"></div>
+</div>
+
+<script>
+    function submitBooking() {
+        const name = document.getElementById('name').value;
+        const omang = document.getElementById('omang').value;
+        const hospital = document.getElementById('hospital').value;
+        const reason = document.getElementById('reason').value;
+
+        if (!name || !omang || !hospital || !reason) {
+            alert("Please fill all fields.");
+            return;
+        }
+
+        document.getElementById('bookingMessage').innerHTML =
+            `<p style="padding:15px;background:#e8ffe8;border-left:5px solid #28a745;">
+                Thank you <strong>${name}</strong>. Your queue for 
+                <strong>${hospital}</strong> has been booked.
+                <br>Your Omang: ${omang}
+                <br>Reason: ${reason}
+            </p>`;
+    }
+
+    function giveRecommendation() {
+        const symptoms = document.getElementById("symptoms").value.toLowerCase();
