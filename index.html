@@ -1,234 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Botswana Hospital Queue Booking</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background: #2a5c82;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .lang-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: white;
-            color: #2a5c82;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            margin-top: 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px #ccc;
-        }
-
-        input, select, textarea, button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            border: 1px solid #aaa;
-        }
-
-        button {
-            background: #2a5c82;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-        }
-
-        button:hover {
-            background: #1f4561;
-        }
-
-        #recommendationBox {
-            background: #e8f4ff;
-            padding: 15px;
-            border-left: 5px solid #2a5c82;
-            display: none;
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Botswana Hospital Queue Booking</title>
+  <style>
+    :root{ --primary:#2a5c82; --primary-dark:#1f4561; --bg:#f2f2f2; }
+    body{font-family:Arial, sans-serif;background:var(--bg);margin:0}
+    header{background:var(--primary);color:#fff;padding:20px;text-align:center;position:relative}
+    .lang-btn{position:absolute;top:15px;right:15px;background:#fff;color:var(--primary);
+      border:none;padding:8px 15px;border-radius:6px;cursor:pointer;font-weight:bold}
+    .container{width:90%;max-width:900px;margin:25px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 10px #ccc}
+    h2{color:var(--primary);margin-top:0}
+    label{font-weight:bold}
+    input,select,textarea,button{width:100%;padding:12px;margin-top:8px;margin-bottom:20px;border-radius:6px;border:1px solid #aaa}
+    button{background:var(--primary);color:#fff;font-size:16px;cursor:pointer;border:none}
+    button:hover{background:var(--primary-dark)}
+    .info{padding:15px;background:#e8ffe8;border-left:5px solid #28a745}
+    .warn{padding:12px;background:#fff6e5;border-left:5px solid #f0ad4e;margin-top:10px}
+    #recommendationBox{background:#e8f4ff;padding:15px;border-left:5px solid var(--primary);display:none;margin-top:10px}
+    small.muted{color:#666}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row>div{flex:1 1 220px}
+  </style>
 </head>
-
 <body>
 
 <button class="lang-btn" onclick="toggleLanguage()">Setswana</button>
 
 <header>
-    <h1 id="title">Botswana Public Hospital Queue Booking</h1>
-    <p id="subtitle">Book your queue, submit your symptoms, and get basic health recommendations.</p>
+  <h1 id="title">Botswana Public Hospital Queue Booking</h1>
+  <p id="subtitle">Book your queue, submit your symptoms, and get basic health recommendations.</p>
 </header>
 
+<!-- Booking -->
 <div class="container">
-    <h2 id="formTitle">Queue Booking Form</h2>
+  <h2 id="formTitle">Queue Booking Form</h2>
 
-    <label id="nameLabel">Full Name</label>
-    <input id="name" placeholder="Enter your full name">
+  <div class="row">
+    <div>
+      <label id="nameLabel" for="name">Full Name</label>
+      <input id="name" placeholder="Enter your full name"/>
+    </div>
+    <div>
+      <label id="omangLabel" for="omang">National ID (Omang)</label>
+      <input id="omang" placeholder="Enter your Omang"/>
+    </div>
+  </div>
 
-    <label id="omangLabel">National ID (Omang)</label>
-    <input id="omang" placeholder="Enter your Omang">
-
-    <label id="hospitalLabel">Select Hospital</label>
-    <select id="hospital">
+  <div class="row">
+    <div>
+      <label id="hospitalLabel" for="hospital">Select Hospital</label>
+      <select id="hospital">
         <option value="">-- choose hospital --</option>
         <option>Princess Marina Hospital</option>
         <option>Nyangabgwe Referral Hospital</option>
         <option>Molepolole DHMT</option>
         <option>Mochudi Hospital</option>
         <option>Ghanzi Primary Hospital</option>
-    </select>
+      </select>
+    </div>
+    <div>
+      <label id="reasonLabel" for="reason">Reason for Visit</label>
+      <input id="reason" placeholder="E.g. check-up, pain, fever"/>
+    </div>
+  </div>
 
-    <label id="reasonLabel">Reason for Visit</label>
-    <input id="reason" placeholder="E.g. check-up, pain, fever">
+  <!-- Live preview of slot/time -->
+  <div id="previewSlot" class="warn" style="display:none"></div>
 
-    <button onclick="submitBooking()" id="bookBtn">Book Queue</button>
+  <button onclick="submitBooking()" id="bookBtn">Book Queue</button>
 
-    <div id="bookingMessage"></div>
+  <div id="bookingMessage"></div>
+
+  <div class="warn">
+    <strong id="demoTitle">Demo notice:</strong>
+    <div id="demoText">
+      This demo stores today’s queue in your browser only (local device). For real use, connect a server/database so all patients share the same queue.
+    </div>
+  </div>
 </div>
 
+<!-- Symptoms -->
 <div class="container">
-    <h2 id="symptomTitle">Submit Your Symptoms</h2>
-
-    <textarea id="symptoms" rows="5" placeholder="Describe your symptoms..."></textarea>
-    <button onclick="giveRecommendation()" id="recommendBtn">Get Recommendation</button>
-
-    <div id="recommendationBox"></div>
+  <h2 id="symptomTitle">Submit Your Symptoms</h2>
+  <textarea id="symptoms" rows="5" placeholder="Describe your symptoms..."></textarea>
+  <button onclick="giveRecommendation()" id="recommendBtn">Get Recommendation</button>
+  <div id="recommendationBox"></div>
 </div>
 
 <script>
-let language = "EN"; // Default language
+/* =========================
+   LANGUAGE TOGGLE
+========================= */
+let language = "EN"; // EN or TS
 
-function toggleLanguage() {
-    language = (language === "EN") ? "TS" : "EN";
-    document.querySelector(".lang-btn").innerText = (language === "EN") ? "Setswana" : "English";
-    updateLanguage();
+function toggleLanguage(){
+  language = (language === "EN") ? "TS" : "EN";
+  document.querySelector(".lang-btn").innerText = (language === "EN") ? "Setswana" : "English";
+  updateLanguage();
+  updatePreview(); // keep preview text in sync
 }
 
-function updateLanguage() {
-    if (language === "TS") {
-        document.getElementById("title").innerText = "Bokopano Jwa Dipetlele tsa Botswana";
-        document.getElementById("subtitle").innerText = "Kwadisa leina, tsenya matshwao, mme o bone kgakololo.";
-        document.getElementById("formTitle").innerText = "Foromo ya go Kwadisa Queue";
-        document.getElementById("nameLabel").innerText = "Leina le le tletseng";
-        document.getElementById("name").placeholder = "Tsenya leina la gago";
-        document.getElementById("omangLabel").innerText = "Nomoro ya Omang";
-        document.getElementById("omang").placeholder = "Tsenya Omang ya gago";
-        document.getElementById("hospitalLabel").innerText = "Kgetha Sepatela";
-        document.getElementById("reasonLabel").innerText = "Lebaka la Ketelo";
-        document.getElementById("reason").placeholder = "Sekao: tlhahlobo, botlhoko, mogote";
-        document.getElementById("bookBtn").innerText = "Kwadisa Queue";
-        document.getElementById("symptomTitle").innerText = "Tsenya Matshwao a Bolwetse";
-        document.getElementById("symptoms").placeholder = "Tlhalosa matshwao a gago...";
-        document.getElementById("recommendBtn").innerText = "Bona Kgakololo";
-    } else {
-        document.getElementById("title").innerText = "Botswana Public Hospital Queue Booking";
-        document.getElementById("subtitle").innerText = "Book your queue, submit your symptoms, and get basic health recommendations.";
-        document.getElementById("formTitle").innerText = "Queue Booking Form";
-        document.getElementById("nameLabel").innerText = "Full Name";
-        document.getElementById("name").placeholder = "Enter your full name";
-        document.getElementById("omangLabel").innerText = "National ID (Omang)";
-        document.getElementById("omang").placeholder = "Enter your Omang";
-        document.getElementById("hospitalLabel").innerText = "Select Hospital";
-        document.getElementById("reasonLabel").innerText = "Reason for Visit";
-        document.getElementById("reason").placeholder = "E.g. check-up, pain, fever";
-        document.getElementById("bookBtn").innerText = "Book Queue";
-        document.getElementById("symptomTitle").innerText = "Submit Your Symptoms";
-        document.getElementById("symptoms").placeholder = "Describe your symptoms...";
-        document.getElementById("recommendBtn").innerText = "Get Recommendation";
-    }
+function t(en, ts){ return language === "TS" ? ts : en; }
+
+function updateLanguage(){
+  document.getElementById("title").innerText      = t("Botswana Public Hospital Queue Booking", "Bokopano Jwa Dipetlele tsa Botswana");
+  document.getElementById("subtitle").innerText   = t("Book your queue, submit your symptoms, and get basic health recommendations.", "Kwadisa queue, tsenya matshwao, mme o bone kgakololo ya motheo.");
+  document.getElementById("formTitle").innerText  = t("Queue Booking Form", "Foromo ya go Kwadisa Queue");
+  document.getElementById("nameLabel").innerText  = t("Full Name", "Leina le le tletseng");
+  document.getElementById("name").placeholder     = t("Enter your full name", "Tsenya leina la gago");
+  document.getElementById("omangLabel").innerText = t("National ID (Omang)", "Nomoro ya Omang");
+  document.getElementById("omang").placeholder    = t("Enter your Omang", "Tsenya Omang ya gago");
+  document.getElementById("hospitalLabel").innerText = t("Select Hospital", "Kgetha Sepatela");
+  document.getElementById("reasonLabel").innerText   = t("Reason for Visit", "Lebaka la Ketelo");
+  document.getElementById("reason").placeholder      = t("E.g. check-up, pain, fever", "Sekao: tlhahlobo, botlhoko, mogote");
+  document.getElementById("bookBtn").innerText    = t("Book Queue", "Kwadisa Queue");
+  document.getElementById("symptomTitle").innerText = t("Submit Your Symptoms", "Tsenya Matshwao a Bolwetse");
+  document.getElementById("symptoms").placeholder = t("Describe your symptoms...", "Tlhalosa matshwao a gago...");
+  document.getElementById("recommendBtn").innerText = t("Get Recommendation", "Bona Kgakololo");
+  document.getElementById("demoTitle").innerText  = t("Demo notice:", "Tlhokomeliso ya teko:");
+  document.getElementById("demoText").innerText   = t(
+    "This demo stores today’s queue in your browser only (local device). For real use, connect a server/database so all patients share the same queue.",
+    "Teko eno e boloka queue ya gompieno mo sebrowsereng sa gago fela. Mo tirisong ya nnete, dirisa seva kgotsa database gore balwetsi botlhe ba abelane ka queue."
+  );
 }
 
+/* =========================
+   SLOT SCHEDULER (Front-end demo)
+========================= */
+// Configuration
+const SLOT_MINUTES = 10;      // length of each slot
+const CLINIC_START = "08:00"; // day start
+const CLINIC_END   = "16:00"; // day end
 
-// =========================
-// BOOKING FUNCTION
-// =========================
-
-function submitBooking() {
-    const name = document.getElementById('name').value;
-    const omang = document.getElementById('omang').value;
-    const hospital = document.getElementById('hospital').value;
-    const reason = document.getElementById('reason').value;
-
-    if (!name || !omang || !hospital || !reason) {
-        alert(language === "TS" ? "Tsweetswee tsenya dintlha tsotlhe." : "Please fill all fields.");
-        return;
-    }
-
-    document.getElementById('bookingMessage').innerHTML =
-        `<p style="padding:15px;background:#e8ffe8;border-left:5px solid #28a745;">
-            ${language === "TS" ? "Re a leboga" : "Thank you"} <strong>${name}</strong>.
-            ${language === "TS" ? "Queue ya gago e kwadisitswe mo" : "Your queue has been booked at"} 
-            <strong>${hospital}</strong>.
-        </p>`;
+function todayKey(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
 }
 
+function hospitalQueueKey(h){ return `queueIndex|${todayKey()}|${h}`; }
 
-// =========================
-// SETSWANA + ENGLISH SYMPTOM CHECKER
-// =========================
-
-function giveRecommendation() {
-    const symptoms = document.getElementById("symptoms").value.toLowerCase();
-    const box = document.getElementById("recommendationBox");
-
-    if (!symptoms) {
-        alert(language === "TS" ?
-              "Tsweetswee tsenya matshwao a gago." :
-              "Please enter your symptoms.");
-        return;
-    }
-
-    let advice = language === "TS" ?
-        "Etela sepatela gore o tlholelwe sentle." :
-        "Please visit a hospital for a full check-up.";
-
-    if (symptoms.includes("mogote") || symptoms.includes("fever")) {
-        advice = language === "TS" ?
-            "O ka tswa o na le mogote. Nwa metsi a mantsi." :
-            "You may have a fever. Drink plenty of water.";
-    }
-
-    if (symptoms.includes("kgwa") || symptoms.includes("cough")) {
-        advice = language === "TS" ?
-            "O ka nna le phatlho. Apara maseke." :
-            "You may have flu-like symptoms. Wear a mask.";
-    }
-
-    if (symptoms.includes("botlhoko mo sefubeng") || symptoms.includes("chest pain")) {
-        advice = language === "TS" ?
-            "Botlhoko mo sefubeng bo kotsi. Etela sepatela ka ponyo ya leitlho." :
-            "Chest pain can be serious. Seek care immediately.";
-    }
-
-    box.style.display = "block";
-    box.innerHTML = `<strong>${language === "TS" ? "Kgakololo" : "Recommendation"}:</strong><br>${advice}`;
+function parseTimeToday(hhmm){
+  const [h,m] = hhmm.split(":").map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
 }
+
+function addMinutes(date, mins){ return new Date(date.getTime() + mins*60000); }
+
+function fmtTime(date){
+  const h = String(date.getHours()).padStart(2,"0");
+  const m = String(date.getMinutes()).padStart(2,"0");
+  return `${h}:${m}`;
+}
+
+/**
+ * Compute next available slot for the given hospital:
+ * - Aligns to SLOT_MINUTES grid
+ * - Never gives a time in the past
+ * - Respects clinic hours; returns "no more slots" if full
+ * - Persists/reads queue index from localStorage per hospital per day
+ */
+function getNextSlot(hospital){
+  const start = parseTimeToday(CLINIC_START);
+  const end   = parseTimeToday(CLINIC_END);
+  const totalSlots = Math.max(0, Math.floor((end - start) / (SLOT_MINUTES*60000)));
+
+  const key = hospitalQueueKey(hospital);
+  let index = parseInt(localStorage.getItem(key) || "0", 10);
+
+  // Ensure we don't book earlier than now:
+  const now = new Date();
+  const minsSinceStart = Math.floor((now - start)/60000);
+  const currentSlotIndex = Math.max(0, Math.floor(minsSinceStart / SLOT_MINUTES));
+
+  // If clinic already started, push index forward
+  if(index < currentSlotIndex) index = currentSlotIndex;
+
+  // Also snap "now" to the next slot grid (if user is booking after mid-slot)
+  const minutesIntoCurrentSlot = minsSinceStart % SLOT_MINUTES;
+  const snapForward = minutesIntoCurrentSlot > 0 ? 1 : 0;
+  index = Math.max(index, currentSlotIndex + snapForward);
+
+  if(index >= totalSlots){
+    return {
+      available:false,
+      messageEN:"No more slots today. Please choose another day.",
+      messageTS:"Ga go na dislot tse dingwe gompieno. Tsweetswee tlhopha letsatsi le lengwe."
+    };
+  }
+
+  const slotStart = addMinutes(start, index * SLOT_MINUTES);
+  const queueNumber = index + 1;
+
+  return { available:true, slotStart, queueNumber, key, nextIndex:index+1, totalSlots };
+}
+
+// Live preview
+document.getElementById("hospital").addEventListener("change", updatePreview);
+
+function updatePreview(){
+  const hospital = document.getElementById("hospital").value;
+  const preview = document.getElementById("previewSlot");
+  if(!hospital){ preview.style.display="none"; return; }
+
+  const res = getNextSlot(hospital);
+  preview.style.display = "block";
+  if(!res.available){
+    preview.textContent = t(res.messageEN, res.messageTS);
+  }else{
+    const msgEN = `Next available slot: ${fmtTime(res.slotStart)} (Queue #${res.queueNumber}).`;
+    const msgTS = `Slot e e latelang: ${fmtTime(res.slotStart)} (Paloganyo #${res.queueNumber}).`;
+    preview.textContent = t(msgEN, msgTS);
+  }
+}
+
+/* =========================
+   BOOKING FUNCTION
+========================= */
+function submitBooking(){
+  const name = document.getElementById('name').value.trim();
+  const omang = document.getElementById('omang').value.trim();
+  const hospital = document.getElementById('hospital').value;
+  const reason = document.getElementById('reason').value.trim();
+  const msgDiv = document.getElementById('bookingMessage');
+
+  if(!name || !omang || !hospital || !reason){
+    alert(t("Please fill all fields.", "Tsweetswee tsenya dintlha tsotlhe."));
+    return;
+  }
+
+  const res = getNextSlot(hospital);
+  if(!res.available){
+    msgDiv.innerHTML = `<p class="warn">${t(res.messageEN, res.messageTS)}</p>`;
+    return;
+  }
+
+  // Reserve the slot (increment index)
+  localStorage.setItem(res.key, String(res.nextIndex));
+
+  const slotTime = fmtTime(res.slotStart);
+  const queueNo  = res.queueNumber;
+
+  const confirmEN = `
+    <div class="info">
+      <strong>Thank you, ${name}.</strong><br>
+      Your queue at <strong>${hospital}</strong> is booked for <strong>${todayKey()}</strong>.<br>
+      Queue Number: <strong>#${queueNo}</strong><br>
+      <u>Time Slot:</u> <strong>${slotTime}</strong> (slot length ${SLOT_MINUTES} mins)<br>
+      Omang: ${omang}<br>
+      Reason: ${reason}<br>
+      <small class="muted">Please arrive 10 minutes early with your Omang and any medical records.</small>
+    </div>`;
+
+  const confirmTS = `
+    <div class="info">
+      <strong>Re a leboga, ${name}.</strong><br>
+      Queue ya gago kwa <strong>${hospital}</strong> e kwadisitswe <strong>${todayKey()}</strong>.<br>
+      Paloganyo: <strong>#${queueNo}</strong><br>
+      <u>Nako ya Slot:</u> <strong>${slotTime}</strong> (boleele jwa slot metsotso e ${SLOT_MINUTES})<br>
+      Omang: ${omang}<br>
+      Lebaka: ${reason}<br>
+      <small class="muted">Tsweetswee fitlha metsotso e 10 pele, o tletse Omang le dikwalo tsotlhe.</small>
+    </div>`;
+
+  msgDiv.innerHTML = (language === "TS") ? confirmTS : confirmEN;
+
+  // Refresh preview (so user sees the next slot for the next booking)
+  updatePreview();
+}
+
+/* =========================
+   SYMPTOM CHECKER (EN + TS)
+========================= */
+function giveRecommendation(){
+  const symptoms = document.getElementById("symptoms").value.toLowerCase();
+  const box = document.getElementById("recommendationBox");
+
+  if(!symptoms){
+    alert(t("Please enter your symptoms.", "Tsweetswee tsenya matshwao a gago."));
+    return;
+  }
+
+  let advice = t(
+    "Please visit a hospital for a full check-up.",
+    "Etela sepatela gore o tlholelwe sentle."
+  );
+
+  if(symptoms.includes("mogote") || symptoms.includes("fever")){
+    advice = t(
+      "You may have a fever. Drink plenty of water and rest.",
+      "O ka tswa o na le mogote. Nwa metsi a mantsi mme o ikhutse."
+    );
+  }
+  if(symptoms.includes("kgwa") || symptoms.includes("cough") || symptoms.includes("sore throat") || symptoms.includes("bolwetse jwa phatlho")){
+    advice = t(
+      "These may be flu-like symptoms. Wear a mask, rest; seek care if it worsens.",
+      "Matshwao a ka supa phatlho. Apara maseke, ikhutse; etela sepatela fa go gola."
+    );
+  }
+  if(symptoms.includes("botlhoko mo sefubeng") || symptoms.includes("chest pain")){
+    advice = t(
+      "Chest pain can be serious. Seek medical attention immediately.",
+      "Botlhoko mo sefubeng bo ka nna kotsi. Etela sepatela ka ponyo ya leitlho."
+    );
+  }
+  if(symptoms.includes("botlhoko jwa tlhogo") || symptoms.includes("headache")){
+    advice = t(
+      "Headaches may be due to dehydration or stress. Drink water and rest.",
+      "Botlhoko jwa tlhogo bo ka bisiwa ke go se nwe metsi kgotsa kgatelelo. Nwa metsi, ikhutse."
+    );
+  }
+
+  box.style.display = "block";
+  box.innerHTML = `<strong>${t("Recommendation", "Kgakololo")}:</strong><br>${advice}`;
+}
+
+// Init
+updateLanguage();
 </script>
 
 </body>
 </html>
+
