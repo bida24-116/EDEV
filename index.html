@@ -8,14 +8,20 @@
     :root{ --primary:#2a5c82; --primary-dark:#1f4561; --bg:#f2f2f2; }
     *{box-sizing:border-box}
     body{font-family:Arial, sans-serif;background:var(--bg);margin:0}
-    header{
-      background:var(--primary);color:#fff;padding:20px 16px;text-align:center;position:sticky;top:0;z-index:10
+
+    /* Header with flex so the language button is always visible on the right */
+    .site-header{background:var(--primary);color:#fff;position:sticky;top:0;z-index:1000}
+    .header-inner{
+      max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+      gap:12px;padding:16px 20px;
     }
+    .site-subtitle{max-width:1100px;margin:0 auto;padding:0 20px 16px 20px;color:#e7eef5}
+
     .lang-btn{
-      position:fixed;top:12px;right:12px;background:#fff;color:var(--primary);
-      border:none;padding:10px 16px;border-radius:24px;cursor:pointer;font-weight:bold;
-      box-shadow:0 2px 8px rgba(0,0,0,.15)
+      background:#fff;color:var(--primary);border:none;padding:10px 16px;border-radius:24px;
+      cursor:pointer;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,.15)
     }
+
     .container{
       width:90%;max-width:900px;margin:24px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 10px #ccc
     }
@@ -36,12 +42,13 @@
 </head>
 <body>
 
-<!-- Language toggle always visible -->
-<button class="lang-btn" id="langBtn" type="button" onclick="toggleLanguage()">Setswana</button>
-
-<header>
-  <h1 id="title">Botswana Public Hospital Queue Booking</h1>
-  <p id="subtitle">Book your queue, submit your symptoms, and get basic health recommendations.</p>
+<header class="site-header">
+  <div class="header-inner">
+    <h1 id="title" style="margin:0">Botswana Public Hospital Queue Booking</h1>
+    <!-- Language toggle—always visible -->
+    <button class="lang-btn" id="langBtn" type="button" onclick="toggleLanguage()">Setswana</button>
+  </div>
+  <p class="site-subtitle" id="subtitle">Book your queue, submit your symptoms, and get basic health recommendations.</p>
 </header>
 
 <!-- Booking -->
@@ -105,7 +112,6 @@
    LANGUAGE TOGGLE
 ========================= */
 let language = "EN"; // EN or TS
-
 function t(en, ts){ return language === "TS" ? ts : en; }
 
 function toggleLanguage(){
@@ -116,7 +122,6 @@ function toggleLanguage(){
 }
 
 function updateLanguage(){
-  // Headings & labels
   document.getElementById("title").innerText      = t("Botswana Public Hospital Queue Booking", "Bokopano Jwa Dipetlele tsa Botswana");
   document.getElementById("subtitle").innerText   = t("Book your queue, submit your symptoms, and get basic health recommendations.", "Kwadisa queue, tsenya matshwao, mme o bone kgakololo ya motheo.");
   document.getElementById("formTitle").innerText  = t("Queue Booking Form", "Foromo ya go Kwadisa Queue");
@@ -141,7 +146,7 @@ function updateLanguage(){
 /* =========================
    SLOT SCHEDULER (Front-end demo)
 ========================= */
-// Configuration (you can change these)
+// You can change these:
 const SLOT_MINUTES = 10;      // each slot is 10 minutes
 const CLINIC_START = "08:00"; // clinic opens
 const CLINIC_END   = "16:00"; // clinic closes
@@ -168,11 +173,7 @@ function fmtTime(date){
   return `${h}:${m}`;
 }
 
-/**
- * Determine next available slot for a hospital for today.
- * - Uses localStorage to persist the next index on this device.
- * - Aligns with current time so you never get a past slot.
- */
+/** Compute next available slot for a hospital for today. */
 function getNextSlot(hospital){
   const start = parseTimeToday(CLINIC_START);
   const end   = parseTimeToday(CLINIC_END);
@@ -181,13 +182,12 @@ function getNextSlot(hospital){
   const key = hospitalQueueKey(hospital);
   let index = parseInt(localStorage.getItem(key) || "0", 10);
 
-  // Ensure we don't assign a slot in the past
+  // Don’t assign a past slot
   const now = new Date();
   const minsSinceStart = Math.floor((now - start)/60000);
   const currentSlotIndex = Math.max(0, Math.floor(minsSinceStart / SLOT_MINUTES));
   const minutesIntoCurrentSlot = Math.max(0, minsSinceStart % SLOT_MINUTES);
   const snapForward = minutesIntoCurrentSlot > 0 ? 1 : 0;
-
   index = Math.max(index, currentSlotIndex + snapForward);
 
   if(index >= totalSlots){
@@ -200,13 +200,11 @@ function getNextSlot(hospital){
 
   const slotStart = addMinutes(start, index * SLOT_MINUTES);
   const queueNumber = index + 1;
-
   return { available:true, slotStart, queueNumber, key, nextIndex:index+1, totalSlots };
 }
 
-// Update preview when hospital changes
+// Show preview when hospital changes
 document.getElementById("hospital").addEventListener("change", updatePreview);
-
 function updatePreview(){
   const hospital = document.getElementById("hospital").value;
   const preview = document.getElementById("previewSlot");
@@ -274,7 +272,7 @@ function submitBooking(){
 
   msgDiv.innerHTML = (language === "TS") ? confirmTS : confirmEN;
 
-  // Refresh preview for the next patient
+  // Update the preview for the next patient
   updatePreview();
 }
 
@@ -324,11 +322,12 @@ function giveRecommendation(){
   box.innerHTML = `<strong>${t("Recommendation", "Kgakololo")}:</strong><br>${advice}`;
 }
 
-// Initialize default language text
+// Initialize default language content
 updateLanguage();
 </script>
 
 </body>
 </html>
+
 
 
