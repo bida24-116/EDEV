@@ -91,14 +91,6 @@
 
   <div id="bookingMessage"></div>
 
-  <div class="warn">
-    <strong id="demoTitle">Demo notice:</strong>
-    <div id="demoText">
-      This demo stores today’s queue in your browser only (local device). For real use, connect a server/database so all patients share the same queue.
-    </div>
-  </div>
-</div>
-
 <!-- Symptoms -->
 <div class="container">
   <h2 id="symptomTitle">Submit Your Symptoms</h2>
@@ -137,10 +129,6 @@ function updateLanguage(){
   document.getElementById("symptoms").placeholder = t("Describe your symptoms...", "Tlhalosa matshwao a gago...");
   document.getElementById("recommendBtn").innerText = t("Get Recommendation", "Bona Kgakololo");
   document.getElementById("demoTitle").innerText  = t("Demo notice:", "Tlhokomeliso ya teko:");
-  document.getElementById("demoText").innerText   = t(
-    "This demo stores today’s queue in your browser only (local device). For real use, connect a server/database so all patients share the same queue.",
-    "Teko eno e boloka queue ya gompieno mo sebrowsereng sa gago fela. Mo tirisong ya nnete, dirisa seva kgotsa database gore balwetsi botlhe ba abelane ka queue."
-  );
 }
 
 /* =========================
